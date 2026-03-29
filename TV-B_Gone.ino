@@ -233,6 +233,172 @@ void sendAllCodes() {
     delay(100);
 
     Serial.println("=== Cycle complete ===");
+}
+void sendOnAllPinsRC5(uint8_t address, uint8_t command) {
+    IrSender.begin(IR_SEND_PIN1);
+    IrSender.sendRC5(address, command, 2);
+    delay(20);
+    IrSender.begin(IR_SEND_PIN2);
+    IrSender.sendRC5(address, command, 2);
+    delay(20);
+    IrSender.begin(IR_SEND_PIN3);
+    IrSender.sendRC5(address, command, 2);
+}
+
+void sendOnAllPinsRC6(uint8_t address, uint8_t command) {
+    IrSender.begin(IR_SEND_PIN1);
+    IrSender.sendRC6(address, command, 2);
+    delay(20);
+    IrSender.begin(IR_SEND_PIN2);
+    IrSender.sendRC6(address, command, 2);
+    delay(20);
+    IrSender.begin(IR_SEND_PIN3);
+    IrSender.sendRC6(address, command, 2);
+}
+
+void pr(const char* name) {
+    Serial.print("  -> ");
+    Serial.println(name);
+}
+
+void sendAllCodes() {
+    pr("Hisense POWER OFF (0x04FB)");
+    sendOnAllPinsNEC(0x20, 0x4E);
+    delay(100);
+
+    pr("Hisense POWER TOGGLE (0x04FB)");
+    sendOnAllPinsNEC(0x20, 0x0E);
+    delay(100);
+
+    pr("Hisense POWER OFF (0x00FD)");
+    sendOnAllPinsNEC(0x00, 0xD1);
+    delay(100);
+
+    pr("Hisense POWER TOGGLE (0x00FD)");
+    sendOnAllPinsNEC(0x00, 0x10);
+    delay(100);
+
+    pr("Hisense POWER TOGGLE alt (0x00FD)");
+    sendOnAllPinsNEC(0x00, 0x0D);
+    delay(100);
+
+    pr("Hisense VIDAA POWER OFF");
+    sendOnAllPinsNEC(0x00, 0x1A);
+    delay(100);
+
+    pr("Hisense VIDAA POWER TOGGLE");
+    sendOnAllPinsNEC(0x00, 0x12);
+    delay(100);
+
+    pr("Samsung");
+    sendOnAllPinsSamsung(0x0707, 0x02);
+    delay(100);
+
+    pr("Samsung alt");
+    sendOnAllPinsSamsung(0x0707, 0x98);
+    delay(100);
+
+    pr("LG");
+    sendOnAllPinsNEC(0x04, 0x08);
+    delay(100);
+
+    pr("LG alt");
+    sendOnAllPinsNEC(0x04, 0xC4);
+    delay(100);
+
+    pr("Sony 12-bit");
+    sendOnAllPinsSony(0x01, 0x15, 12);
+    delay(100);
+
+    pr("Sony 15-bit");
+    sendOnAllPinsSony(0x01, 0x15, 15);
+    delay(100);
+
+    pr("Sony 20-bit");
+    sendOnAllPinsSony(0x01, 0x15, 20);
+    delay(100);
+
+    pr("Panasonic");
+    sendOnAllPinsPanasonic(0x4004, 0x3D);
+    delay(100);
+
+    pr("Vizio");
+    sendOnAllPinsNEC(0x04, 0x08);
+    delay(100);
+
+    pr("Vizio alt");
+    sendOnAllPinsNEC(0x00, 0x15);
+    delay(100);
+
+    pr("Philips RC5");
+    sendOnAllPinsRC5(0x00, 0x0C);
+    delay(100);
+
+    pr("Philips RC6");
+    sendOnAllPinsRC6(0x00, 0x0C);
+    delay(100);
+
+    pr("Sharp");
+    sendOnAllPinsNEC(0x02, 0x45);
+    delay(100);
+
+    pr("Toshiba");
+    sendOnAllPinsNEC(0x40, 0x12);
+    delay(100);
+
+    pr("Toshiba alt");
+    sendOnAllPinsNEC(0x44, 0x12);
+    delay(100);
+
+    pr("TCL/Roku");
+    sendOnAllPinsNEC(0x04, 0x18);
+    delay(100);
+
+    pr("Sanyo");
+    sendOnAllPinsNEC(0x38, 0x12);
+    delay(100);
+
+    pr("RCA");
+    sendOnAllPinsNEC(0xF0, 0x0F);
+    delay(100);
+
+    pr("JVC");
+    sendOnAllPinsNEC(0x03, 0x17);
+    delay(100);
+
+    pr("Haier");
+    sendOnAllPinsNEC(0x98, 0x67);
+    delay(100);
+
+    pr("Insignia");
+    sendOnAllPinsNEC(0x04, 0x08);
+    delay(100);
+
+    pr("Magnavox");
+    sendOnAllPinsNEC(0x38, 0x0A);
+    delay(100);
+
+    pr("Emerson");
+    sendOnAllPinsNEC(0x86, 0x0F);
+    delay(100);
+
+    pr("Hitachi");
+    sendOnAllPinsNEC(0x50, 0x17);
+    delay(100);
+
+    pr("Pioneer");
+    sendOnAllPinsNEC(0xA5, 0x1C);
+    delay(100);
+
+    pr("Westinghouse");
+    sendOnAllPinsNEC(0x04, 0x08);
+    delay(100);
+
+    pr("Funai");
+    sendOnAllPinsNEC(0x07, 0x02);
+    delay(100);
+
+    Serial.println("=== Cycle complete ===");
 }  pr("LG");
   IrSender.sendNEC(0x04, 0x08, 2);
   delay(100);
