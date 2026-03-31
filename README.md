@@ -1,31 +1,112 @@
-How it works: You wire an IR LED to an Arduino (Uno, Nano, or Mega) and point it at any TV. The sketch cycles through power-off codes for 20+ TV brands — Samsung, LG, Sony, Panasonic, Vizio, Philips, Sharp, Toshiba, TCL, Hisense, RCA, JVC, Hitachi, Pioneer, and more.
-Protocols covered: NEC, Sony, Samsung, RC5, RC6 — covers basically every TV made in the last 20 years.
-What you need: Just an IR LED (940nm), a 100Ω resistor, and the IRremote library installed in Arduino IDE.
-How it runs: Sends all codes on startup, then loops every 5 seconds so you can sweep a room. Serial monitor shows which code it's sending.
-Super simple wiring — only 3 connections:
+# TV-B-Gone — IR Blaster Wiring & Setup Guide
 
-What you need:
+## What It Does
 
-Arduino (Uno, Nano, or Mega)
-1x IR LED (940nm — the clear/purple ones)
-1x 100Ω resistor
-A couple of jumper wires
-Connections:
+Cycles through discrete **Power OFF** codes for 20+ TV brands (Hisense, Samsung, LG, Sony, Panasonic, etc.) via infrared. Fires all codes on startup, then repeats every 5 minutes. Hisense codes fire first.
 
-IR LED long leg (anode) → 100Ω resistor → Pin 3 on the Arduino
-IR LED short leg (cathode) → GND on the Arduino
-That's it. Two wires and a resistor.
+---
 
-Tips:
+## Parts Needed
 
-The IR LED looks like it's not doing anything because the light is invisible to your eyes, but your phone camera can see it — use that to verify it's blinking
-Point it directly at the TV's IR sensor (usually bottom-center of the bezel)
-For more range, you can add a second IR LED in parallel, or use a transistor to drive it with more current
-Keep it within about 5-10 feet of the TV for best results
-Upload steps:
+| Part | Notes |
+|------|-------|
+| Arduino Uno (or Nano/Mega) | Uno recommended |
+| IR LED (5mm, 940nm) | The clear ones — NOT a photodiode/receiver |
+| 100Ω resistor | brown-black-brown — DO NOT use 10K |
+| Breadboard + jumper wires | |
 
-Install the IRremote library in Arduino IDE (Sketch → Include Library → Manage Libraries → search "IRremote")
-Open the sketch from the app (filter to IR category, copy the code)
-Select your board (Uno/Nano/Mega)
-Upload
-Point at your Hisense and watch it go dark
+> **Important:** Verify your clear LED is an emitter, not a receiver. Test with a phone camera (front camera works best) — you should see it glow purple/white when powered.
+
+---
+
+## Wiring — Single LED (basic)
+
+```
+Arduino Pin 3  →  [100Ω resistor]  →  IR LED (+) long leg
+                                       IR LED (−) short leg  →  GND
+```
+
+```
+           Arduino Uno
+           ┌─────────┐
+   Pin 3 ──┤         │
+       GND ──┤         │
+           └─────────┘
+                │  │
+               [R] 100Ω
+                │
+              IR LED
+              (+) long leg
+              (−) short leg ── GND
+```
+
+**Pin 3 is required** — IRremote library uses Pin 3 for PWM (38kHz carrier) on Uno.
+
+---
+
+## Wiring — Three LEDs (better range)
+
+Wire 3 IR LEDs **in parallel**, all on Pin 3. Give each its own resistor:
+
+```
+Pin 3 ──┬──[100Ω]── IR LED 1 (+) → (−) → GND
+        ├──[100Ω]── IR LED 2 (+) → (−) → GND
+        └──[100Ω]── IR LED 3 (+) → (−) → GND
+```
+
+Point the 3 LEDs in slightly different directions to widen the spread.
+
+---
+
+## Library Setup
+
+1. Open Arduino IDE
+2. Go to **Tools → Manage Libraries**
+3. Search for **IRremote** by `Arduino-IRremote`
+4. Install version **4.x** (not v2 or v3)
+
+---
+
+## Upload & Run
+
+1. Copy the sketch from the **TV-B-Gone** section of the Arduino Prank Lab app
+2. Set pin number at the top: `#define IR_SEND_PIN 3`
+3. Upload to your Uno
+4. Open **Serial Monitor (9600 baud)** — you'll see which brand is being sent
+5. Point the IR LED at the TV's IR receiver (usually front-center or bottom-left of screen)
+
+---
+
+## Range Tips
+
+| Method | Range |
+|--------|-------|
+| Single LED, 100Ω | ~1–2 metres |
+| 3× LEDs in parallel | ~2–4 metres |
+| Smaller resistor (47Ω) | slightly more |
+| Transistor driver (2N2222) | ~8–10 metres |
+
+**Transistor wiring for maximum range:**
+```
+Pin 3 ──[1KΩ]── Base (B) of 2N2222
+5V ──[33Ω]── IR LED (+) → LED (−) → Collector (C) of 2N2222
+Emitter (E) → GND
+```
+
+---
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| No flash visible on phone camera | Check LED isn't backwards — swap legs |
+| Camera shows flash but TV doesn't respond | Point closer, aim at TV's IR sensor |
+| LED doesn't light even with 5V direct | LED is dead, use a different one |
+| Serial Monitor shows nothing | Set baud to 9600, check sketch uploaded |
+| Works at 10cm but not 1m | Use 3 LEDs or transistor driver |
+
+---
+
+## Supported Brands (Power OFF only — no toggle, no power ON)
+
+Hisense (3 variants), Samsung, LG, Sony, Panasonic, Philips, Sharp, Toshiba, TCL/Roku, Vizio, Sanyo, RCA, JVC, Haier, Insignia, Magnavox, Emerson, Hitachi, Pioneer, Westinghouse, Funai
