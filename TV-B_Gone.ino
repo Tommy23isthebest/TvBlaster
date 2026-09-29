@@ -477,6 +477,9 @@ void loop() {
   }
   checkButton();
   if (!running) return;
-  blastAll();
-  delay(200);                // brief pause between sweeps; off TVs stay off
+  blastAll();                // one sweep per button press; STOP may return early
+  running = false;
+  IR_LOW();
+  digitalWrite(statusPin, LOW);
+  // The next loop() call sleeps until another button press.
 }
